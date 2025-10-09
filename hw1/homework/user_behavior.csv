@@ -1,0 +1,11 @@
+user_id,session_duration,page_views,converted,country,device,age_group
+1001,350,8,1,USA,mobile,18-25
+1002,120,3,0,UK,desktop,26-35
+1003,480,12,1,Canada,tablet,36-45
+1004,65,2,0,Australia,mobile,18-25
+1005,890,15,1,USA,desktop,46-55
+1006,,4,0,UK,mobile,26-35
+1007,210,6,1,Germany,tablet,36-45
+1008,430,9,1,France,desktop,18-25
+1009,95,3,0,USA,mobile,55+
+1010,670,11,1,Canada,desktop,26-35
