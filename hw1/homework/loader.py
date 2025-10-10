@@ -1,5 +1,5 @@
 # Импорт класса
-from loader_script import DataLoader
+from loader_module import DataLoader
 
 def dataloader_example(file_path):
     """Проверяет работу методов класса DataLoader()"""
