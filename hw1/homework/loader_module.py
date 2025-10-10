@@ -28,3 +28,4 @@ class DataLoader():
             return f"Форма датасета: {shape}\nНазвания колонок: {columns_lst}\nКоличество пропущенных значений по колонкам: {nulls_lst}"
         else:
             raise ValueError("Данные не загружены")
+
