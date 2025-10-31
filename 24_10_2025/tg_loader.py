@@ -33,7 +33,7 @@ class TextDataLoader():
     def extract_posts(self, json_data=None):
         """Извлекает текст и дату постов из датасета, генерирует id"""
         if json_data is None:
-            json_data = self.load_data(self.file_path)
+            json_data = self.load_data()
         posts = []
         # Проверяем наличие ключа 'messages' в данных
         if isinstance(json_data, dict) and 'messages' in json_data:
@@ -57,7 +57,7 @@ class TextDataLoader():
                             elif isinstance(item, dict) and 'text' in item:
                                 text_parts.append(item['text'])
                         # Объединяем все части текста
-                        if text_parts != '':
+                        if text_parts:
                             posts.append({'id': post_id, 'date': date, 'text': ''.join(text_parts)})
         return posts
 
@@ -76,11 +76,9 @@ class TextDataLoader():
         """Считает статистику по датасету: количество постов, длину в символах и токенах"""
         if posts:
             posts_num = len(posts)
-            avg_sym_length = sum([len(post['text']) for post in posts]) / posts_num
-            for post in posts:
-                text_no_punc = re.sub(r'[^\w\s]', '', post['text'])
-                avg_token_length = len(text_no_punc) / posts_num
-                return posts_num, avg_sym_length, avg_token_length
+            avg_char_length = sum([len(post['text']) for post in posts]) / posts_num
+            avg_token_length = sum(len(post['text'].split()) for post in posts) / posts_num
+            return posts_num, avg_char_length, avg_token_length
 
     def save_to_csv(self, posts:list, output_path:str):
         """Сохраняет датасет в файл формата CSV"""
@@ -88,26 +86,28 @@ class TextDataLoader():
         df.to_csv(output_path, index=False)
         print(f"Данные сохранены в {output_path}")
 
-# Пример применения класса
-if __name__ == "__main__":
+
+def main():
+    """Пример использования класса"""
     # 1. Создание экземпляра
     text_loader = TextDataLoader("result.json")
-
     # 2. Загрузка данных
     json_data = text_loader.load_data()
-
     # 3. Извлечение постов
     posts = text_loader.extract_posts(json_data)
-
+    print(f"Извлечено {len(posts)} постов")
     # 4. Очистка текстов
     cleaned_posts = text_loader.clean_text(posts)
-
-    # 5. Сохранение в CSV
-    text_loader.save_to_csv(cleaned_posts, 'cleaned_posts.csv')
-
-    # 6. Просмотр результатов
-    print("\nПервые 3 очищенных поста:")
+    # 5. Просмотр результатов очистки
+    print("Первые 3 очищенных поста:")
     for i, post in enumerate(cleaned_posts[:3]):
-        print(f"{i + 1}) {post["text"][:100]}...")
+        print(f"{i + 1}) {post['text'][:100]}...")
+    # 6. Сохранение в CSV
+    text_loader.save_to_csv(cleaned_posts, "cleaned_posts.csv")
+    # 7. Подсчет статистики
+    stats_res = text_loader.stats(cleaned_posts)
+    print(f"В наборе данных {stats_res[0]} постов."
+          f"\nСредняя длина поста: {stats_res[1]:.2f} символов, {stats_res[2]:.2f} токенов")
 
-    print(text_loader.stats(cleaned_posts))
+if __name__ == "__main__":
+    main()
